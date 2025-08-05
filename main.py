@@ -54,7 +54,26 @@ async def get_image(item_id):
     image_bytes = cur.execute(f"""
                               SELECT image from items WHERE id={item_id}
                               """).fetchone()[0]
-    return Response(content=bytes.fromhex(image_bytes))
+    return Response(content=bytes.fromhex(image_bytes), media_type='image/*')
+
+@app.post('/signup')
+def signup(id:Annotated[str,Form()], 
+           password:Annotated[str,Form()],
+           name:Annotated[str,Form()],
+           email:Annotated[str,Form()]):
+    # 중복 id, email 검사
+    cur.execute(f"SELECT * FROM users WHERE id='{id}' OR email='{email}'")
+    if cur.fetchone() is not None:
+        return '404'
+    
+    cur.execute(f"""
+                INSERT INTO users(id, name, email, password)
+                VALUES ('{id}', '{name}', '{email}', '{password}')
+                """)
+    con.commit()
+
+    return '200'
+
 
 
 app.mount("/", StaticFiles(directory="frontend", html=True), name="frontend")
