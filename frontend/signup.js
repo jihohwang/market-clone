@@ -29,7 +29,7 @@ const handleSubmit = async (event) => {
       //   div.style.color = "blue";
       alert("회원 가입에 성공했습니다.");
       window.location.pathname = "/login.html";
-    } else if (data === "404") {
+    } else if (data === "중복") {
       div.innerText = "이미 존재하는 아이디 또는 이메일입니다.";
       div.style.color = "red";
     }
